@@ -1,18 +1,15 @@
 # PaperTrail::Version#reify doesn't seem to parse JSON automatically.
 module PaperTrailVersionWithJson
   def reify
-    puts "DEBUG: modified reify!"
-    super
+    "MODIFIED2 - #{super}"
   end
 end
 
-if Rails.env.production?
-  puts "DEBUG: prepending reify fix for production"
-  PaperTrail::Version.prepend(PaperTrailVersionWithJson)
-else
-  # wrap this in #to_prepare so that it works in dev after we reload!
+if ENV['WITH_FIX']
   Rails.configuration.to_prepare do
     puts "DEBUG: prepending reify fix for develompent"
     PaperTrail::Version.prepend(PaperTrailVersionWithJson)
   end
+else
+  PaperTrail::Version.prepend(PaperTrailVersionWithJson)
 end
